@@ -1,6 +1,10 @@
 select
     -- Keys
-    visitId as visit_id
+    {{ dbt_utils.surrogate_key([
+        'visitId'
+        ,'fullVisitorId'
+        ,'date'
+    ]) }} as id
     ,[date] as fk_dim_date
     ,{{ dbt_utils.surrogate_key(['device.browser']) }} as fk_dim_browser
     ,{{ dbt_utils.surrogate_key([
@@ -15,6 +19,8 @@ select
 
     -- Attributes
     ,TIMESTAMP_SECONDS(visitStartTime) as visit_start_time
+    ,visitId as visit_id
+    ,fullVisitorId as full_visitor_id
     ,totals.visits
     ,totals.hits
     ,totals.timeOnSite as time_on_site

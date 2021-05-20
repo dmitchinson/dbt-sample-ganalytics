@@ -8,5 +8,14 @@ with dates as (
     }}
 )
 select
-    d.date_day as date
+    cast(d.date_day as string) as id --TODO render as int in yyyymmdd format
+    ,d.date_day as date
+
+    -- Dateparts
+    ,extract(day from d.date_day) as day_of_month
+    ,extract(month from d.date_day) as month_num
+    ,extract(year from d.date_day) as year
+    ,extract(isoweek from d.date_day) as iso_week
+    
+
 from dates as d
