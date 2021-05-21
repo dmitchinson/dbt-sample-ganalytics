@@ -8,7 +8,7 @@ with dates as (
     }}
 )
 select
-    cast(d.date_day as string) as id --TODO render as int in yyyymmdd format
+    cast(format_date("%Y%m%d", d.date_day) as int64) as id
     ,d.date_day as date
 
     -- Dateparts
