@@ -1,33 +1,33 @@
 select
     -- Keys
     {{ dbt_utils.surrogate_key([
-        'visitId'
-        ,'fullVisitorId'
-        ,'date'
+        'd.visitId'
+        ,'d.fullVisitorId'
+        ,'d.date'
     ]) }} as id
-    ,[date] as fk_dim_date
-    ,{{ dbt_utils.surrogate_key(['device.browser']) }} as fk_dim_browser
+    ,cast(d.date as int64) as fk_dim_date
+    ,{{ dbt_utils.surrogate_key(['d.device.browser']) }} as fk_dim_browser
     ,{{ dbt_utils.surrogate_key([
-        'geoNetwork.continent'
-        ,'geoNetwork.subContinent'
-        ,'geoNetwork.country'
-        ,'geoNetwork.region'
-        ,'geoNetwork.metro'
-        ,'geoNetwork.city'
+        'd.geoNetwork.continent'
+        ,'d.geoNetwork.subContinent'
+        ,'d.geoNetwork.country'
+        ,'d.geoNetwork.region'
+        ,'d.geoNetwork.metro'
+        ,'d.geoNetwork.city'
     ]) }} as fk_dim_geo
-    ,{{ dbt_utils.surrogate_key(['device.browser']) }} as fk_dim_os
+    ,{{ dbt_utils.surrogate_key(['d.device.browser']) }} as fk_dim_os
 
     -- Attributes
-    ,TIMESTAMP_SECONDS(visitStartTime) as visit_start_time
-    ,visitId as visit_id
-    ,fullVisitorId as full_visitor_id
-    ,totals.visits
-    ,totals.hits
-    ,totals.timeOnSite as time_on_site
-    ,totals.transactions as transactions
-    ,totals.transactionRevenue as transaction_revenue
+    ,TIMESTAMP_SECONDS(d.visitStartTime) as visit_start_time
+    ,d.visitId as visit_id
+    ,d.fullVisitorId as full_visitor_id
+    ,d.totals.visits
+    ,d.totals.hits
+    ,d.totals.timeOnSite as time_on_site
+    ,d.totals.transactions as transactions
+    ,d.totals.transactionRevenue as transaction_revenue
 
     -- Audit
     ,{{ dbt_utils.current_timestamp() }} as ts_load
 from
-    {{ ref('stg_ga_sessions') }}
+    {{ ref('stg_ga_sessions') }} as d
